@@ -5,6 +5,10 @@ import com.example.hewa.data.api.models.WeatherApi
 import com.example.hewa.domain.models.CurrentWeather
 import javax.inject.Inject
 
+/**
+ *A concrete implementation of a contact mapper class
+ * for mapping api to domain entities
+ */
 class ApiWeatherMapperImpl @Inject constructor() : ApiWeatherMapper<CurrentWeather, WeatherApi> {
     override fun mapToDomain(apiEntity: WeatherApi): CurrentWeather {
         return CurrentWeather(

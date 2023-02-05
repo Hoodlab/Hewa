@@ -17,9 +17,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.PathParser
-
+/**
+*A background function that can be used on different screens
+ * @param[modifier] modifier
+ * @param[content] a lambda function that allows other UI function to be used
+*/
 @Composable
 fun WeatherBackground(modifier: Modifier = Modifier,content: @Composable () -> Unit) {
+    // gradient brush for the bg
     val brush = Brush.linearGradient(listOf(
         Color(0xff005C97),
         Color(0xff363795)
@@ -29,14 +34,20 @@ fun WeatherBackground(modifier: Modifier = Modifier,content: @Composable () -> U
             .fillMaxSize()
             .background(brush)
             .drawBehind {
+                //get the data necessary to draw the bg
                 val path = Path()
                 val x = size.width
                 val y = size.height
                 val center = size.center
 
                 path.apply {
+                    //start at the bottom left conner
                     moveTo(0f, y)
+                    //create a strait line to draw the bottom part of the ui
                     lineTo(-20f, y * .7f)
+                    //create a curved smooth line that is connecting btn two edges
+                    // by using percentages we can easily determine the position
+                    // of the points to be ploted
                     cubicTo(
                         x1 = x * .8f,
                         y1 = y * .6f,
@@ -45,72 +56,17 @@ fun WeatherBackground(modifier: Modifier = Modifier,content: @Composable () -> U
                         x3 = x + center.x,
                         y3 = y * .65f,
                     )
+                    //finish the drawing by connecting the left and write edge
                     lineTo(x, y)
                 }
+                // create a different gradient to use on the surface drawing
                 val gradient = Brush.linearGradient(
                     colors = listOf(Color(0xFF1F4696), Color(0xFF005C97))
                 )
                 drawPath(path = path, brush = gradient)
             }
-    ) { content() }
+    ) { content() } // pass in reusable contents
 }
-
-@Composable
-fun BG() {
-    Canvas(modifier =
-        Modifier.fillMaxSize()){
-        val path = Path()
-        val x = size.width
-        val y = size.height
-        val center = size.center
-
-        path.apply {
-            moveTo(0f, y )
-            lineTo(-20f, center.y + center.y /2)
-            cubicTo(
-                x1 = center.x /2,
-                y1 = y + center.y / 2 ,
-                x2 = center.x,
-                y2 = center.y + center.y / 3,
-                x3 = x + center.x,
-                y3 = y
-            )
-            lineTo(x, y)
-        }
-
-        drawPath(path = path, color = Color.Cyan)
-    }
-}
-
-@Composable
-fun BG2() {
-    Canvas(modifier = Modifier.size(width = 605.dp, height = 100.dp)) {
-        val path = Path()
-        val x = size.width
-        val y = size.height
-        val center = size.center
-
-        path.apply {
-            moveTo(0f, y)
-            lineTo(-20f, y * .7f)
-            cubicTo(
-                x1 = x * .8f,
-                y1 = y * .6f,
-                x2 = x * .4f,
-                y2 = y * .8f,
-                x3 = x + center.x,
-                y3 = y * .65f,
-            )
-            lineTo(x, y)
-        }
-        val gradient = Brush.linearGradient(
-            colors = listOf(Color(0xFF1F4696), Color(0xFF005C97))
-        )
-        drawPath(path = path, brush = gradient)
-
-    }
-}
-
 
 @Preview(showSystemUi = true)
 @Composable
@@ -119,34 +75,3 @@ fun PrevBackground() {
         Text(text = "Weather")
     }
 }
-
-@Preview(showSystemUi = true)
-@Composable
-fun PrevBG() {
-    BG2()
-}
-
-/*
-*val path = Path()
-        val x = size.width
-        val y = size.height
-        val center = size.center
-
-        path.apply {
-            moveTo(0f, y)
-            lineTo(-20f, y * .7f)
-            cubicTo(
-                x1 = x * .8f,
-                y1 = y * .6f,
-                x2 = x * .1f,
-                y2 = y * .8f,
-                x3 = x + center.x,
-                y3 = y * .65f,
-            )
-            lineTo(x, y)
-        }
-        val gradient = Brush.linearGradient(
-            colors = listOf(Color(0xFF1F4696), Color(0xFF005C97))
-        )
-        drawPath(path = path, brush = gradient)
-*/

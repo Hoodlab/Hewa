@@ -1,23 +1,19 @@
 package com.example.hewa.ui.home
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.hewa.R
 import com.example.hewa.data.api.ApiConstants
@@ -40,6 +36,10 @@ enum class BottomNavScreen(@DrawableRes val icon: Int) {
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel, modifier: Modifier) {
     val state = homeViewModel.state
+    /*
+    * get the weather data once when the home screen enters composition
+    * a side effect is used to avoid multiple api request when recomposition happens
+    */
     LaunchedEffect(key1 = Unit) {
         homeViewModel.fetchWeatherData()
     }
@@ -62,7 +62,7 @@ fun HomeScreen(homeViewModel: HomeViewModel, modifier: Modifier) {
             }
 
             is State.Success -> {
-                Home(
+                WeatherDetails(
                     weather = state.weather.data!!,
                     modifier
                 )
@@ -72,7 +72,7 @@ fun HomeScreen(homeViewModel: HomeViewModel, modifier: Modifier) {
 }
 
 @Composable
-fun Home(
+fun WeatherDetails(
     weather: CurrentWeather,
     modifier: Modifier,
 ) {
@@ -90,46 +90,56 @@ fun Home(
                     .padding(top = 15.dp)
                     .size(11.dp)
             )
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 60.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.LocationOn,
-                    contentDescription = null,
-                    modifier = Modifier.size(30.dp),
-                    tint = Gold
-                )
-                Spacer(modifier = Modifier.size(6.dp))
-                Text(
-                    text = weather.cityName,
-                    style = MaterialTheme.typography.h4,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
+            CurrentWeatherDetail(weather)
             WeatherInfo(modifier = Modifier, weather)
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Row {
-                    Text(text = "Feels like", color = MaterialTheme.colors.onPrimary)
-                    Spacer(modifier = Modifier.size(6.dp))
-                    Text(text = "${weather.feelsLike}℃", color = Gold)
-                }
-                Spacer(modifier = Modifier.size(8.dp))
-                Text(
-                    text = weather.weatherCondition,
-                    color = MaterialTheme.colors.onPrimary,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
+            FeelsLikeItem(weather)
             WeatherSummary(weather)
         }
     }
 
+}
+
+@Composable
+private fun CurrentWeatherDetail(weather: CurrentWeather) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(top = 60.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Filled.LocationOn,
+            contentDescription = null,
+            modifier = Modifier.size(30.dp),
+            tint = Gold
+        )
+        Spacer(modifier = Modifier.size(6.dp))
+        Text(
+            text = weather.cityName,
+            style = MaterialTheme.typography.h4,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.onPrimary
+        )
+    }
+}
+
+@Composable
+private fun FeelsLikeItem(weather: CurrentWeather) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Row {
+            Text(text = "Feels like", color = MaterialTheme.colors.onPrimary)
+            Spacer(modifier = Modifier.size(6.dp))
+            Text(text = "${weather.feelsLike}℃", color = Gold)
+        }
+        Spacer(modifier = Modifier.size(8.dp))
+        Text(
+            text = weather.weatherCondition,
+            color = MaterialTheme.colors.onPrimary,
+            fontWeight = FontWeight.Bold,
+        )
+    }
 }
 
 @Composable
@@ -223,7 +233,6 @@ fun WeatherSummary(weather: CurrentWeather) {
             info = "${weather.windSpeed} km/h"
         )
         Spacer(modifier = Modifier.size(6.dp))
-        // TODO: fix date
         WeatherInfoItem(
             icon = R.drawable.ic_date,
             title = Utils.getFormattedDate(),

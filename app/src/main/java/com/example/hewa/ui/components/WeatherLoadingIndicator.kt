@@ -21,7 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-
+/**
+ *A custom weather loading indicator
+ */
 @Composable
 fun WeatherLoadingIndicator() {
     val gradientColors = listOf(
@@ -38,6 +40,12 @@ fun WeatherLoadingIndicator() {
 
 }
 
+/**
+ *Loading indicator for the weather ap
+ * @param[size] the size of indicator
+ * @param[sweepAngle] the angle that the arc sweeps
+ * @param[strokeWidth] the size of the width of the indicator
+ */
 @Composable
 fun Indicator(
     size: Dp = 32.dp,
@@ -45,30 +53,25 @@ fun Indicator(
     brush: Brush = Brush.linearGradient(listOf(MaterialTheme.colors.primary)),
     strokeWidth: Dp = ProgressIndicatorDefaults.StrokeWidth,
 ) {
+    /*
+    *used for animating the indicator
+    */
     val transition = rememberInfiniteTransition()
-
+    /*
+    *animate the arc angle when the angle changes from 0 to 360
+    */
     val currentArcStartAngle by transition.animateValue(
         0,
         360,
         Int.VectorConverter,
-        infiniteRepeatable(
+        infiniteRepeatable( // make it infinite repeatable
             animation = tween(
-                durationMillis = 1500,
+                durationMillis = 1500, // 1.5 sec
                 easing = LinearEasing
             )
         )
     )
-    val currentArc2StartAngle by transition.animateValue(
-        0,
-        360,
-        Int.VectorConverter,
-        infiniteRepeatable(
-            animation = tween(
-                durationMillis = 1100,
-                easing = LinearEasing
-            )
-        )
-    )
+
 
     // define stroke with given width and arc ends type considering device DPI
     val stroke = with(LocalDensity.current) {
@@ -91,8 +94,8 @@ fun Indicator(
         )
         // draw arc with the same stroke
         drawArc(
-            color = Color(0xFF3AE180) ,
-            startAngle = currentArcStartAngle.toFloat()-360 ,
+            color = Color(0xFF3AE180),
+            startAngle = currentArcStartAngle.toFloat() - 360,
             sweepAngle = 11.25f,
             useCenter = false,
             style = stroke

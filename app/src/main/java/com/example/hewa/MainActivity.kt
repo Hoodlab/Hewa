@@ -55,25 +55,6 @@ class MainActivity : ComponentActivity() {
         }
 
     }
-
-    private fun hideSystemUI() {
-
-        //Hides the ugly action bar at the top
-        actionBar?.hide()
-
-        //Hide the status bars
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        } else {
-            window.insetsController?.apply {
-                hide(WindowInsets.Type.statusBars())
-                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        }
-    }
 }
 
 @Composable
@@ -85,7 +66,9 @@ fun WeatherApp(finish: () -> Unit) {
     val results = viewModel(modelClass = ResultsViewModel::class.java)
     val state = homeViewModel.state
 
-
+    /*
+    *show the splash screen when the app launches
+    */
     AnimatedVisibility(
         visible = transitionState.targetState == SplashScreenState.Show,
         exit = slideOutHorizontally(
@@ -100,6 +83,9 @@ fun WeatherApp(finish: () -> Unit) {
             transitionState.targetState = SplashScreenState.Completed
         }
     }
+    /*
+    *Slide in the Home screen after the splash screen is shown
+    */
     AnimatedVisibility(
         visible = transitionState.targetState == SplashScreenState.Completed,
         enter = slideInHorizontally(

@@ -9,23 +9,10 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 
 
-
 @Module
 @InstallIn(ActivityRetainedComponent::class)
 abstract class ActivityRetainedModule {
-
-
     @Binds
     @ActivityRetainedScoped
     abstract fun bindWeatherRepository(weatherRepositoryImpl: WeatherRepositoryImpl): WeatherRepository
-
-
-
-
-
-
-
-
-
-
 }

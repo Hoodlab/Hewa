@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import com.example.hewa.domain.repository.State
 import com.example.hewa.ui.components.WeatherBackground
 import com.example.hewa.ui.components.WeatherLoadingIndicator
-import com.example.hewa.ui.home.Home
+import com.example.hewa.ui.home.WeatherDetails
 
 @Composable
 fun ResultScreen(state: ResultState, modifier: Modifier) {
@@ -37,7 +37,7 @@ fun ResultScreen(state: ResultState, modifier: Modifier) {
             }
 
             is State.Success -> {
-                Home(
+                WeatherDetails(
                     weather = state.weather.data!!,
                     modifier = modifier
                 )

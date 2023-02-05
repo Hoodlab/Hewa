@@ -23,12 +23,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchWeatherInfo(city: String) {
-        viewModelScope.launch {
-            state = state.copy(weather = repository.getWeatherData(city = city))
-        }
-    }
-
     fun onScreenChange(selectedScreen: BottomNavScreen) {
         state = state.copy(selectedScreen = selectedScreen)
     }
